@@ -6,9 +6,9 @@ volumes:
     driver: local
 services:
   mongo-db:
-    image: mongo
+    image: mongo:3.6-jessie
     environment:
-      MONGO_INITDB_DATABASE: teste
+      MONGO_INITDB_DATABASE: ${mongo-db-name}
     volumes:
     - vol-mongo:/data/db:rw
     labels:
@@ -16,8 +16,8 @@ services:
   balance:
     image: rancher/lb-service-haproxy:v0.9.1
     ports:
-    - 2000:2000/tcp
-    - 2001:2001/tcp
+    - ${mongoclient-port}:${mongoclient-port}/tcp
+    - ${nodered-port}:${nodered-port}/tcp
     labels:
       io.rancher.scheduler.affinity:host_label: group=hosts
       io.rancher.container.agent.role: environmentAdmin,agent

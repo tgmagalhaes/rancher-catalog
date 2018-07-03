@@ -1,3 +1,28 @@
+.catalog:
+  name: backend
+  version: b001
+  description: backend do catalogo
+  uuid: backend-1
+  minimum_rancher_version: 1.6
+  questions:
+    - variable: "mongo-db-namename"
+      description: "Criar um novo banco"
+      label: "Mongo DB Name:"
+      required: true
+      default: 'db_teste'
+      type: "string"
+    - variable: "mongo-client-port"
+      description: "Porta do mongo cliente"
+      label: "Mongo Client Port:"
+      required: true
+      default: 2000
+      type: "int"
+    - variable: "nodered-port"
+      description: "passar a porta do nodered"
+      label: "Nodered Port:"
+      required: true
+      default: 2001
+      type: "int"
 version: '2'
 services:
   mongo-db:
