@@ -1,33 +1,39 @@
 version: '2'
 volumes:
-  mongo-data:
-    external: true
+  vol-mongo:
     driver: local
-  nodered-data:
-    external: true
+  vol-nodered:
     driver: local
 services:
-  mongo:
-    image: mongo:3.6-jessie
-    stdin_open: true
-    volumes:
-    - mongo-data:/data/db:rw
-    tty: true
+  mongo-db:
+    image: mongo
     environment:
-      - NAME=${name}
-    labels:
-      io.rancher.scheduler.affinity:host_label: host=host001
-      io.rancher.container.pull_image: always
-  nodered:
-    image: nodered/node-red-docker
-    stdin_open: true
+      MONGO_INITDB_DATABASE: teste
     volumes:
-    - nodered-data:/data:rw
-    tty: true
-    links:
-    - mongo:mongo
-    ports:
-    - 1880:1880/tcp
+    - vol-mongo:/data/db:rw
     labels:
-      io.rancher.scheduler.affinity:host_label: host=host001
-      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: group=hosts
+  balance:
+    image: rancher/lb-service-haproxy:v0.9.1
+    ports:
+    - 2000:2000/tcp
+    - 2001:2001/tcp
+    labels:
+      io.rancher.scheduler.affinity:host_label: group=hosts
+      io.rancher.container.agent.role: environmentAdmin,agent
+      io.rancher.container.agent_service.drain_provider: 'true'
+      io.rancher.container.create_agent: 'true'
+  mongo-client:
+    image: mongoclient/mongoclient
+    environment:
+      MONGO_URL: mongodb://mongo-db:27017
+    links:
+    - mongo-db:mongo-db
+    labels:
+      io.rancher.scheduler.affinity:host_label: group=hosts
+  node-red:
+    image: robsonsimonassi/nodered
+    volumes:
+    - vol-nodered:/data:rw
+    links:
+    - mongo-db:mongo-db
