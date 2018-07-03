@@ -1,0 +1,33 @@
+version: '2'
+volumes:
+  mongo-data:
+    external: true
+    driver: local
+  nodered-data:
+    external: true
+    driver: local
+services:
+  mongo:
+    image: mongo:3.6-jessie
+    stdin_open: true
+    volumes:
+    - mongo-data:/data/db:rw
+    tty: true
+    environment:
+      - NAME=${name}
+    labels:
+      io.rancher.scheduler.affinity:host_label: host=host001
+      io.rancher.container.pull_image: always
+  nodered:
+    image: nodered/node-red-docker
+    stdin_open: true
+    volumes:
+    - nodered-data:/data:rw
+    tty: true
+    links:
+    - mongo:mongo
+    ports:
+    - 1880:1880/tcp
+    labels:
+      io.rancher.scheduler.affinity:host_label: host=host001
+      io.rancher.container.pull_image: always

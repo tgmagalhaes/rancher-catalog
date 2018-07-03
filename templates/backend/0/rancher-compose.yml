@@ -1,0 +1,22 @@
+.catalog:
+  name: backend
+  version: b001
+  description:
+  uuid: backend-1
+  minimum_rancher_version: 1.6
+  questions:
+    - variable: "name"
+      description:
+      label: "Name:"
+      required: true
+      default: 'TESTE_ENV'
+      type: "string"
+
+version: '2'
+services:
+  mongo:
+    scale: 1
+    start_on_create: true
+  nodered:
+    scale: 1
+    start_on_create: true

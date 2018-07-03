@@ -1,0 +1,13 @@
+.catalog:
+  name: frontend
+  version: f001
+  description:
+  uuid: frontend-1
+  minimum_rancher_version: 1.6
+  questions:
+    - variable: "name"
+      description:
+      label: "Name:"
+      required: true
+      default: 'TESTE_ENV'
+      type: "string"
